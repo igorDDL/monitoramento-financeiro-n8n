@@ -1,0 +1,130 @@
+{
+  "name": "Automação_Cripto",
+  "nodes": [
+    {
+      "parameters": {
+        "jsCode": "const data = items[0].json;\n\n// Cabeçalho da mensagem\nlet message = \"💰 *Cotação Agora*\\n\\n\";\n\n// Loop para listar as moedas\nfor (const [coin, details] of Object.entries(data)) {\n  // Formata o valor para Reais\n  const price = details.brl.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });\n  \n  // Adiciona na mensagem \n  message += `🔹 *${coin.toUpperCase()}:* ${price}\\n`;\n}\n\nmessage += `\\n_Atualizado em: ${new Date().toLocaleTimeString()}_`;\n\n// Retorna a mensagem pronta\nreturn [{ json: { telegram_msg: message } }];"
+      },
+      "id": "13a7a0cc-3b3f-4806-b22a-5708d9452609",
+      "name": "Code",
+      "type": "n8n-nodes-base.code",
+      "position": [
+        928,
+        448
+      ],
+      "typeVersion": 2
+    },
+    {
+      "parameters": {
+        "chatId": "SEU_CHAT_ID_AQUI",
+        "text": "={{ $json.telegram_msg }}",
+        "additionalFields": {
+          "parse_mode": "Markdown"
+        }
+      },
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [
+        1120,
+        448
+      ],
+      "id": "7886031f-256e-4cb5-983b-6d46dccf6e2e",
+      "name": "Send a text message",
+      "webhookId": "9378af4b-4d1e-44e0-b0da-9dff391244e1",
+      "alwaysOutputData": false,
+      "executeOnce": false,
+      "notesInFlow": false,
+      "credentials": {
+        "telegramApi": {
+          "id": "jHIy7Z26Cn313Yci",
+          "name": "Telegram account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "url": "SUA_API_KEY_AQUI",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.3,
+      "position": [
+        720,
+        448
+      ],
+      "id": "94ccd963-22d4-4c06-8f0d-5bc41f33159c",
+      "name": "HTTP Request"
+    },
+    {
+      "parameters": {
+        "rule": {
+          "interval": [
+            {
+              "triggerAtHour": 9
+            },
+            {
+              "triggerAtHour": 21
+            }
+          ]
+        }
+      },
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1.3,
+      "position": [
+        496,
+        448
+      ],
+      "id": "e75474a3-0e14-4b11-a04d-e26b003dfdaa",
+      "name": "Schedule Trigger"
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Code": {
+      "main": [
+        [
+          {
+            "node": "Send a text message",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "HTTP Request": {
+      "main": [
+        [
+          {
+            "node": "Code",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Schedule Trigger": {
+      "main": [
+        [
+          {
+            "node": "HTTP Request",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1",
+    "availableInMCP": false
+  },
+  "versionId": "43ca5eed-0fd2-4ca4-8e29-34a02bdb4c8a",
+  "meta": {
+    "templateId": "7167",
+    "templateCredsSetupCompleted": true,
+    "instanceId": "7b7d78f1d157a09a49ad723bd6dcd929345b01a9740aa6d8979fd88e6942cd44"
+  },
+  "id": "SGQVrWz0V9g9Sn3nQJqAN",
+  "tags": []
+}
